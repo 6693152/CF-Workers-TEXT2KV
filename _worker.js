@@ -128,7 +128,7 @@ function 下载bat(域名,token) {
 	  `set "FILENAME=%~nx1"`,
 	  ``,
 	  `rem PowerShell命令读取文件的前65行内容，将内容转换为UTF8并进行base64编码`,
-	  `for /f "delims=" %%i in ('powershell -command "$content = ((Get-Content -Path '%cd%/%FILENAME%' -Encoding Default) | Select-Object -First 999) -join [Environment]::NewLine; [convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($content))"') do set "BASE64_TEXT=%%i"`,
+	  `for /f "delims=" %%i in ('powershell -command "$content = ((Get-Content -Path '%cd%/%FILENAME%' -Encoding Default) | Select-Object -First 65) -join [Environment]::NewLine; [convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($content))"') do set "BASE64_TEXT=%%i"`,
 	  ``,
 	  `rem 将内容保存到response.txt`,
 	  `rem echo %BASE64_TEXT% > response.txt`,
@@ -158,7 +158,7 @@ else
   echo "无文件名"
   exit 1
 fi
-BASE64_TEXT=$(head -n 999 $FILENAME | base64 -w 0)
+BASE64_TEXT=$(head -n 65 $FILENAME | base64 -w 0)
 curl -k "https://$DOMAIN/$FILENAME?token=$TOKEN&b64=$BASE64_TEXT"
 echo "更新数据完成"
 `
